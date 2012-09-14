@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b2d2b860-4f3f-4408-a09b-68b0bf89db13" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sir_cachealot.gemspec" afterPath="$PROJECT_DIR$/sir_cachealot.gemspec" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/sir_cachealot/version.rb" afterPath="$PROJECT_DIR$/lib/sir_cachealot/version.rb" />
     </list>
     <ignored path="sir_cachealot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -58,19 +57,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="sir_cachealot.gemspec" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="sir_cachealot.gemspec" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sir_cachealot.gemspec">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="6" column="26" selection-start="216" selection-end="216" vertical-scroll-proportion="0.070680626">
+            <state line="6" column="26" selection-start="216" selection-end="216" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="version.rb" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="version.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/sir_cachealot/version.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="1" column="18" selection-start="38" selection-end="38" vertical-scroll-proportion="0.0">
+            <state line="1" column="18" selection-start="38" selection-end="38" vertical-scroll-proportion="0.011583012">
               <folding />
             </state>
           </provider>
@@ -122,8 +121,8 @@
         <option value="$PROJECT_DIR$/lib/sir_cachealot.rb" />
         <option value="$PROJECT_DIR$/LICENSE.txt" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/lib/sir_cachealot/version.rb" />
         <option value="$PROJECT_DIR$/sir_cachealot.gemspec" />
+        <option value="$PROJECT_DIR$/lib/sir_cachealot/version.rb" />
       </list>
     </option>
   </component>
@@ -482,16 +481,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/sir_cachealot/version.rb">
+    <entry file="file://$PROJECT_DIR$/sir_cachealot.gemspec">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="18" selection-start="38" selection-end="38" vertical-scroll-proportion="0.0">
+        <state line="6" column="26" selection-start="216" selection-end="216" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sir_cachealot.gemspec">
+    <entry file="file://$PROJECT_DIR$/lib/sir_cachealot/version.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="26" selection-start="216" selection-end="216" vertical-scroll-proportion="0.070680626">
+        <state line="1" column="18" selection-start="38" selection-end="38" vertical-scroll-proportion="0.011583012">
           <folding />
         </state>
       </provider>
