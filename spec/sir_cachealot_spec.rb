@@ -13,7 +13,7 @@ describe SirCachealot do
 			config[:debug]          = true
 		end
 
-		(Sir.config(:default_expiry) == DEFAULT_EXPIRY && Sir.config(:mode) == :ram_cache).should == true
+		(Sir.config(:default_expiry) == DEFAULT_EXPIRY && Sir.config("MODE") == :ram_cache).should == true
 
 	end
 
