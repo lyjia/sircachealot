@@ -44,7 +44,7 @@ SirCachealot creates a new globally-accessible class named `Sir`
 
     Sir.configure do |config|
         config[:default_expiry] = 3600 # default expiration timeout in seconds
-        config[:mode]          = :ram_cache # cache storage mode. Currently only :ram_cache is supported. Others may be added at a later date.
+        config[:mode]           = :ram_cache # cache storage mode. Currently only :ram_cache is supported. Others may be added at a later date.
         config[:debug]          = true|false # show some debug messages
         config[:annoy]          = true|false # show even more debug messages
     end
