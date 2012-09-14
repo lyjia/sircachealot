@@ -1,7 +1,7 @@
 # SirCachealot
-![Sir Cachealot graphic](sircachealot.png "Sir Cachealot graphic")
+![Sir Cachealot graphic](https://github.com/lyjia/sir_cachealot/blob/master/sircachealot.png?raw=true "Sir Cachealot graphic")
 
-SirCachealot is an LGPL Ruby Gem is a very simple memcache-like keystore.
+SirCachealot is a very simple memcache-like keystore, licensed under LGPLv3.
 
 ## Installation
 
