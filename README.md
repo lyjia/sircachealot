@@ -7,7 +7,7 @@ SirCachealot is a very simple memcache-like keystore, licensed under LGPLv3.
 
 Add this line to your application's Gemfile:
 
-    gem 'sir_cachealot'
+    gem 'SirCachealot'
 
 And then execute:
 
@@ -15,7 +15,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install sir_cachealot
+    $ gem install SirCachealot
 
 ## Usage
 
