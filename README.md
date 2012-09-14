@@ -1,5 +1,5 @@
 # SirCachealot
-![Sir Cachealot graphic](/sircachealot.png "Sir Cachealot graphic")
+![Sir Cachealot graphic](sircachealot.png "Sir Cachealot graphic")
 
 SirCachealot is an LGPL Ruby Gem is a very simple memcache-like keystore.
 
