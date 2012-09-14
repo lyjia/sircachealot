@@ -1,5 +1,5 @@
 # SirCachealot
-![Sir Cachealot graphic](https://github.com/lyjia/sir_cachealot/blob/master/sircachealot.png?raw=true "Sir Cachealot graphic")
+![Sir Cachealot graphic](https://github.com/lyjia/sircachealot/blob/master/sircachealot.png?raw=true "Sir Cachealot graphic")
 
 SirCachealot is a very simple memcache-like keystore, licensed under LGPLv3.
 
