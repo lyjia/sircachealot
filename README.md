@@ -1,7 +1,10 @@
 # SirCachealot
 ![Sir Cachealot graphic](https://github.com/lyjia/sircachealot/blob/master/sircachealot.png?raw=true "Sir Cachealot graphic")
 
-SirCachealot is a very simple memcache-like keystore, licensed under LGPLv3.
+SirCachealot is a very simple memcache-like keystore, licensed under LGPLv3. It is built to be modular and present a consistent API.
+
+Future plans:
+* Rails Cache, Redis, memcache support
 
 ## Installation
 
