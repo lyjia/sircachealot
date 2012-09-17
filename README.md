@@ -3,8 +3,8 @@
 
 SirCachealot is a very simple memcache-like keystore, licensed under LGPLv3. It is built to be modular and present a consistent API.
 
-Future plans:
-* Rails Cache, Redis, memcache storage modes.
+Future plans for 1.0:
+* Rails cache, Redis, and memcache storage modes.
 
 ## Installation
 
@@ -62,7 +62,7 @@ SirCachealot creates a new globally-accessible class named `Sir`.
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
-** License
+## License
 
 Use of SirCachealot is permitted under the terms of [LGPLv3](http://www.gnu.org/licenses/lgpl-3.0.txt).
 For more information see LICENSE.txt.
