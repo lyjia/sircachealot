@@ -4,7 +4,7 @@
 SirCachealot is a very simple memcache-like keystore, licensed under LGPLv3. It is built to be modular and present a consistent API.
 
 Future plans:
-* Rails Cache, Redis, memcache support
+* Rails Cache, Redis, memcache storage modes.
 
 ## Installation
 
