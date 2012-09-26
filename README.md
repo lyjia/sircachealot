@@ -29,11 +29,21 @@ SirCachealot creates a new globally-accessible class named `Sir`.
     Sir.put(keyname, value)
     Sir.put(keyname, value, expiry) # expiry can be relative or absolute time expressed in seconds (Fixnum) or a Time object.
 
+`put()` will return the object you gave it. This is useful if you wish to use `get()`'s `yield` functionality.
+
 **You can retreive the value later, if it hasn't expired, with:**
 
     my_var = Sir.get(keyname)
 
-*NOTE: `get()` returns `nil` if the key does not exist, or if it has expired.*
+or
+
+    my_var = Sir.get(keyname) do 
+		Sir.put(keyname, Value.find_by_id(id)
+	end
+
+If the key does not exist, or if it has expired:
+* `get()` returns `nil` if not given a block to execute.
+* `get()` yields to code block, if one is supplied.
 
 **If you want to clear the cache, you can:**
 
