@@ -37,8 +37,9 @@ SirCachealot creates a new globally-accessible class named `Sir`.
 
 or
 
-    my_var = Sir.get(keyname) do 
-		Sir.put(keyname, Value.find_by_id(id)
+	# put() returns the object you give it
+	my_var = Sir.get(keyname) do 
+		Sir.put(keyname, User.find_by_id(id))
 	end
 
 If the key does not exist, or if it has expired:
