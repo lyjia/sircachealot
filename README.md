@@ -10,7 +10,7 @@ Future plans for 1.0:
 
 Add this line to your application's Gemfile:
 
-    gem 'SirCachealot'
+    gem 'sir_cachealot'
 
 And then execute:
 
@@ -18,11 +18,11 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install SirCachealot
+    $ gem install sir_cachealot
 
 ## Usage
 
-SirCachealot creates a new globally-accessible class named `Sir`.
+SirCachealot exposes a new module named `Sir`. This module is designed to be available globally in both Rails apps and vanilla Ruby scripts (don't forget `require 'sir_cachealot'`!)
 
 **You can use SirCachealot immediately, using either:**
 
@@ -37,6 +37,7 @@ SirCachealot creates a new globally-accessible class named `Sir`.
 
 or
 
+	# A convenient way to rectify a cache miss!
 	# put() returns the object you give it
 	my_var = Sir.get(keyname) do 
 		Sir.put(keyname, User.find_by_id(id))
