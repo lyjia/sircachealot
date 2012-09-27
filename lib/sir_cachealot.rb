@@ -1,6 +1,6 @@
 require "sir_cachealot/version"
 
-class Sir
+module Sir
 
   RAM = :ram_cache
 
@@ -83,7 +83,7 @@ class Sir
           return nil
         end
       end
-      
+
     else
       puke
     end

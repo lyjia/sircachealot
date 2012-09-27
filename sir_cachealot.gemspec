@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'sir_cachealot/version'
 
 Gem::Specification.new do |gem|
-  gem.name          = "SirCachealot"
+  gem.name          = "sir_cachealot"
   gem.version       = SirCachealot::VERSION
   gem.authors       = ["Lyjia"]
   gem.email         = ["tom@tomcorelis.com"]
