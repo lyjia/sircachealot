@@ -31,6 +31,8 @@ SirCachealot exposes a new module named `Sir`. This module is designed to be ava
 
 `put()` will return the object you gave it. This is useful if you wish to use `get()`'s `yield` functionality.
 
+If `config(:delete_on_nil) == true` and `value == nil`, `put()` will return `true` (because it deleted the key).
+
 **You can retreive the value later, if it hasn't expired, with:**
 
     my_var = Sir.get(keyname)
@@ -47,6 +49,10 @@ If the key does not exist, or if it has expired:
 * `get()` returns `nil` if not given a block to execute.
 * `get()` yields to code block, if one is supplied.
 
+**To delete a cache entry, you can:**
+
+	Sir.delete(key)
+
 **If you want to clear the cache, you can:**
 
     Sir.clear
@@ -62,6 +68,7 @@ If the key does not exist, or if it has expired:
         config[:mode]           = :ram_cache # cache storage mode. Currently only :ram_cache is supported. Others may be added at a later date.
         config[:debug]          = true|false # show some debug messages
         config[:annoy]          = true|false # show even more debug messages
+		config[:delete_on_nil]  = true|false # auto-deletes stale cache entries on if value == nil
     end
     
 *Note: Config keynames are always `.downcase.to_sym`!*
