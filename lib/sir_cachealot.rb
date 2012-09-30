@@ -11,6 +11,7 @@ module Sir
     debug:          false,
     annoy:          false, #super annoying debug messages
     default_expiry: 3600, #Integer(1.hour),
+    delete_on_nil:  true
 
   }
 
@@ -62,7 +63,7 @@ module Sir
 
       if x = @@ram_cache[key]
 
-        if x[:expiry] > Time.now
+        if x[:expiry].nil? || x[:expiry] > Time.now
           return x[:value]
         else
           # cache entry is stale
@@ -89,10 +90,25 @@ module Sir
     end
 
   end
+  
+  # deletes the specified key from the cache.
+  # returns true if successful, false if not found
+  def self.delete(key)
+    
+    case config(:mode)
+    when RAM
+      if @@ram_cache.has_key?(key)
+        @@ram_cache.delete(key)
+        return true
+      end
+    end
+    
+  end
 
   # Puts value in cache, key is param key
   # Param expiry is optional, it can be a relative or absolute Fixnum or Time object
-  # Returns expiry time in absolute form (e.g. 3:56pm instead of 3 hours from now)
+  # Returns the value you put into it, unless config(:delete_on_nil) == true and value == nil.
+  # Returns true (because it deleted the key) if config(:delete_on_nil) == true and value == nil.
   def self.put(key, value, expiry = config(:default_expiry))
 
     case expiry.class.name
@@ -100,28 +116,35 @@ module Sir
       true
     when "Time"
       expiry = Integer(expiry)
+    when "NilClass"
+      true
     else
       raise ArgumentError, "Expiry must be a Fixnum or Time object"
     end
 
 
-    unless (expiry > Integer(Time.now))
+    unless (!expiry.nil? && expiry > Integer(Time.now))
       expiry = Time.now + expiry
     end
 
     puts "          SirCachealot: Will expire <#{key}> at #{expiry}" if config(:annoy) == true
 
-    case config(:mode)
-    when RAM
-
-      @@ram_cache[key]          ||= { }
-      @@ram_cache[key][:value]  = value
-      @@ram_cache[key][:expiry] = expiry
-      return value
-
+    if config(:delete_on_nil) == true && value == nil
+        self.delete(key)
     else
-      puke
+      case config(:mode)
+      when RAM
+
+        @@ram_cache[key]          ||= { }
+        @@ram_cache[key][:value]  = value
+        @@ram_cache[key][:expiry] = expiry
+        return value
+
+      else
+        puke
+      end      
     end
+    
 
 
   end
@@ -174,7 +197,7 @@ module Sir
 
     when RAM
       @@ram_cache.each_key do |k|
-        if @@ram_cache[k][:expiry] < Time.now
+        if !@@ram_cache[k][:expiry].nil? && @@ram_cache[k][:expiry] < Time.now
           puts("          SirCachealot: Cleaned #{k}") if config(:debug)
           @@ram_cache.delete(k)
         end

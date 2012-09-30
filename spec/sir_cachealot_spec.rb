@@ -56,15 +56,29 @@ describe SirCachealot do
     Sir.clean
 
     Sir.size?.should == 0
-
-
+    
   end
 
   it 'should dump() correctly' do
     Sir.put(:dump, TEST)
     Sir.dump
   end
-
-
+  
+  it 'should accept a nil-expiry key' do
+    Sir.put(:test_nil, TEST).should == TEST
+  end
+  
+  it 'should not expire a nil-expiry key' do
+    Sir.get(:test_nil).should == TEST
+  end
+  
+  it 'should auto-delete a key when fed a nil' do
+    Sir.put(:test_nil, nil).should == true
+  end
+  
+  it 'should delete a key if specified' do
+    Sir.put(:delete_me, TEST)
+    Sir.delete(:delete_me).should == true
+  end
 
 end
