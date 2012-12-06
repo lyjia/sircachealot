@@ -35,7 +35,8 @@ If `config(:delete_on_nil) == true` and `value == nil`, `put()` will return `tru
 
 **You can retreive the value later, if it hasn't expired, with:**
 
-    my_var = Sir.get(keyname)
+    my_var = Sir.get(keyname) # for a shallow copy
+    my_var = Sir.get(keyname, true) # for a deep copy (crude way, Marshal.load(Marshal.dump(obj)) )
 
 or
 
