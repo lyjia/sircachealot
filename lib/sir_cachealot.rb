@@ -3,6 +3,9 @@ require "sir_cachealot/version"
 module Sir
 
 	RAM = :ram_cache
+	REDIS = :redis_cache
+	
+	@@redis_driver = nil
 
 	@@ram_cache = { }
 
@@ -11,8 +14,8 @@ module Sir
 		debug:          false,
 		annoy:          false, #super annoying debug messages
 		default_expiry: 3600, #Integer(1.hour),
-		delete_on_nil:  true
-
+		delete_on_nil:  true,
+		use_redis_obj:	nil
 	}
 
 	#Configuration parameters
@@ -25,6 +28,11 @@ module Sir
 
 		if !key.nil? && !value.nil?
 			@@configuration[key] = value
+			
+			if key == :use_redis_obj
+				self::set_redis_obj(val)
+			end
+			
 			return value
 
 		elsif !key.nil? && value.nil?
@@ -41,6 +49,10 @@ module Sir
 				unless knew == k
 					@@configuration[knew] = @@configuration[k]
 					@@configuration.delete(k)
+				end
+
+				if knew == :use_redis_obj
+					self::set_redis_obj(@@configuration[knew])
 				end
 
 			end
@@ -63,25 +75,25 @@ module Sir
 
 		case config(:mode)
 			when RAM
-
 				if x = @@ram_cache[key]
-
 					if x[:expiry].nil? || x[:expiry] > Time.now
 						to_ret = x[:value]
 					else
 						# cache entry is stale
 						puts ("          SirCachealot: Cache entry <#{key}> expired at #{x[:expiry]}. Deleting...") if config(:debug)
 						@@ram_cache.delete(key)
-
 					end
-
 				end
+				
+			when REDIS
+				key = self::nsed_key(key)
+				to_ret = Marshal.load( @@redis_driver.get(key) )
 
 			else
 				puke
 		end
 
-		if copy
+		if copy && config(:mode) == RAM
 			to_ret = self.crude_clone(to_ret)
 		end
 
@@ -104,6 +116,12 @@ module Sir
 					@@ram_cache.delete(key)
 					return true
 				end
+			when REDIS
+				if @@redis_driver.del( self::nsed_key(key) )
+					return true
+				end
+			else
+				puke
 		end
 
 	end
@@ -138,12 +156,17 @@ module Sir
 		else
 			case config(:mode)
 				when RAM
-
 					@@ram_cache[key]          ||= { }
 					@@ram_cache[key][:value]  = value
 					@@ram_cache[key][:expiry] = expiry
 					return value
 
+				when REDIS
+					key = self::nsed_key(key)
+					@@redis_driver.set(key, Marshal.dump(value) )
+					@@redis_driver.expireat(key, expiry) unless expiry == nil
+					return value
+					
 				else
 					puke
 			end
@@ -174,6 +197,8 @@ module Sir
 				@@ram_cache.each do |k, v|
 					puts("%-20s %-20s %20s" % [k, v[:value].class, v[:expiry]])
 				end
+			when REDIS
+				raise ArgumentError, "This command not available in REDIS mode"
 			else
 				puke
 		end
@@ -190,6 +215,8 @@ module Sir
 		case config(:mode)
 			when RAM
 				@@ram_cache = { }
+			when REDIS
+				raise ArgumentError, "This command not available in REDIS mode"
 			else
 				puke
 		end
@@ -209,6 +236,8 @@ module Sir
 						@@ram_cache.delete(k)
 					end
 				end
+			when REDIS
+				raise ArgumentError, "This command not available in REDIS mode"
 			else
 				puke
 		end
@@ -218,13 +247,28 @@ module Sir
 
 	private
 
+	def self.set_redis_obj(value)
+		if value.class.name == "Redis"
+			@@configuration[:mode] = REDIS
+			@@redis_driver = @@configuration[:use_redis_obj] 
+		else
+			if @@configuration[:mode] == REDIS
+				raise ArgumentError, "use_redis_obj must be of class Redis"
+			end
+			
+		end
+	end
+
 	def self.puke
 		raise TypeError, "Invalid config(:mode). Check the inputs sent to Sir.configure()"
 	end
 
-
 	def self.crude_clone(obj)
 		return Marshal.load(Marshal.dump(obj))
 	end
-
+	
+	# returns a namespaced key
+	def self.nsed_key(key)
+		return "SirCachealot-#{key}"
+	end
 end

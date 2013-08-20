@@ -13,7 +13,7 @@ describe SirCachealot do
 			config[:debug]          = true
 		end
 
-		(Sir.config(:default_expiry) == DEFAULT_EXPIRY && Sir.config("MODE") == :ram_cache).should == true
+		(Sir.config(:default_expiry) == DEFAULT_EXPIRY && Sir.config(:mode) == :ram_cache).should == true
 
 	end
 
@@ -22,9 +22,7 @@ describe SirCachealot do
 	end
 
 	it 'should return an arbitrary key' do
-
 		(Sir.get(:test) == TEST).should == true
-
 	end
 
 	it 'should yield when given a block and a key that does not exist' do
@@ -104,6 +102,5 @@ describe SirCachealot do
 		(hash[:a][:aa]).should_not == newhash[:a][:aa]
 
 	end
-
-
+	
 end
