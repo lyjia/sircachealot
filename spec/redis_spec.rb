@@ -11,7 +11,7 @@ describe "SirCachealot Redis support" do
 	it 'should connect and configure correctly' do
 		Sir.configure do |config|
 			config[:default_expiry] = DEFAULT_EXPIRY
-			config["MODE"]          = :redis_cache
+			config[:mode]          = :redis_cache
 			config[:debug]          = true
 			config[:use_redis_obj] = redis_obj
 		end
@@ -42,10 +42,8 @@ describe "SirCachealot Redis support" do
 
 	it 'should report its size correctly' do
 
-		Sir.size?.should == 1
+		Sir.size?.should == :not_possible
 
 	end
-
-
 
 end

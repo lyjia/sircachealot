@@ -1,4 +1,4 @@
-require "sir_cachealot/version"
+#require "sir_cachealot/version"
 
 module Sir
 
@@ -30,7 +30,7 @@ module Sir
 			@@configuration[key] = value
 			
 			if key == :use_redis_obj
-				self::set_redis_obj(val)
+				self::set_redis_obj(value)
 			end
 			
 			return value
@@ -87,8 +87,13 @@ module Sir
 				
 			when REDIS
 				key = self::nsed_key(key)
-				to_ret = Marshal.load( @@redis_driver.get(key) )
-
+				got = @@redis_driver.get(key) 
+				
+				unless got.nil?
+					to_ret = Marshal.load( got ) 
+				else
+					to_ret = nil
+				end
 			else
 				puke
 		end
@@ -163,8 +168,9 @@ module Sir
 
 				when REDIS
 					key = self::nsed_key(key)
-					@@redis_driver.set(key, Marshal.dump(value) )
-					@@redis_driver.expireat(key, expiry) unless expiry == nil
+					@@redis_driver.set(key, Marshal.dump(value).to_s )
+					#$stderr.puts "Will expire at #{expiry}"
+					@@redis_driver.expireat(key, expiry.to_i) unless expiry == nil
 					return value
 					
 				else
@@ -182,6 +188,8 @@ module Sir
 		case config(:mode)
 			when RAM
 				return @@ram_cache.count
+			when REDIS
+				return :not_possible
 			else
 				puke
 		end
