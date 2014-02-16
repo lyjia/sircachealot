@@ -1,15 +1,15 @@
 # SirCachealot
 ![Sir Cachealot graphic](https://github.com/lyjia/sircachealot/blob/master/sircachealot.png?raw=true "Sir Cachealot graphic")
 
-SirCachealot is an easy-to-use, pluggable key-value store, available under the 2-clause BSD license. It is built for:
+SirCachealot is an easy-to-use, in-memory, pluggable key-value store, available under the 2-clause BSD license. It is built for:
 
-* Swappable, modular backends. Cache server down? Swap another one in and keep chuggin'. Currently supports Redis and an in-memory store.
+* Simple, swappable, modular backends. Cache server down? Swap another one in and keep chuggin'. Currently supports Redis and an in-memory store.
 * Shared memory between processes. Multi-process environments (such as in Passenger) make shared state difficult.
 * Unified API supporting a selected, shared subset of each backend's features.
 * Easily and seamlessly deal with cache misses.
 * Lets you cache stuff the Ruby way!
 
-Here's an example usage, which caches a user object to avoid fetching it from the database:
+Here's a quick example, which caches a user object to avoid fetching it from the database:
 
     def login(id, password_hash)
 
@@ -130,12 +130,45 @@ Redis cache supports a subset of full Redis functionality.
 
     cache_opts = Sir::Backends::RedisCache::DEFAULTS
     cache_opts[:redis_obj] = redis_obj                   #supply a preconfigured Redis instance
+    cache_opts[:namespace] = "MyCacheStore"              #override the default "SirCachealot" namespace
+    cache_opts[:serializer] = :marshal                   #all requests to put() are serialized. :marshal or :json are available
 
     Sir.configure do |config|
         config[:default_expiry] = 3600
         config[:mode]           = :redis_cache
         config[:options]        = cache_opts
     end
+
+##### Options
+
+* `:redis_obj`: Store your pre-configured `Redis` instance in here
+* `:namespace`: Internally, all keys are prefixed with "SirCachealot" while stored in Redis. You can change that string with this option.
+* `:serializer`: `:marhsal` to serialize all values with `Marshal.load()`, or :json to serialize all values with `.to_json`
+    * Note: Do not switch to a different serializer without first calling `Sir.nuke()`!
+
+## Testing
+A test suite is available through `rspec`.
+
+sir_cachealot 0.6.0 was tested against ruby 1.9.3, 2.0, and 2.1 and passed 27/27 tests.
+
+### Testing SirCachealot
+
+    $> cd $GEM_PATH             # cd into your gem path. The shown command, as written, will fail if you use rvm.
+    $> cd gems/sir_cachealot-0.6.0
+    $> bundle install
+    $> rspec
+
+## Change Log
+
+### 0.6.0
+
+* Modularized backends.
+* Implemented Redis Cache features: FLUSHDB (`nuke()`, KEYS (`keys()`), DBSIZE (`length()`), BGSAVE (`flush()`)
+* Renamed clean, clear functions to sweep, nuke (to be easier to visually differentiate)
+
+## Known issues
+
+* `Marshal.load()`, which is used by RedisCache's `:marshal` serializer, has been known to throw exceptions when it is called repeatedly (like in a tight loop)
 
 ## Contributing
 
