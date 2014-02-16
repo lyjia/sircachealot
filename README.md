@@ -15,7 +15,7 @@ Here's an example usage, which caches a user object to avoid fetching it from th
 
         user = Sir.get(keyname) do |key|               #Doesn't execute the block is key is found
             Sir.put(key, User.find_by_id(id), 1.day)   #Cache miss! So let's fetch the User and store it for a day
-        end
+        end                                                 (note: 1.day comes from Rails, not included)
 
         # your code here
         user.authenticate?(password_hash)              #returns true if match, false is not
@@ -46,6 +46,8 @@ Or install it yourself as:
 
 SirCachealot exposes a new module named `Sir`. This module is designed to be available globally in both Rails apps and vanilla Ruby scripts (don't forget `require 'sir_cachealot'`!)
 
+This section is a quick tour through some of SirCachealot's best features. For a comprehensive API reference, please refer to the comments in `Sir::Backends::Base`.
+
 **You can use SirCachealot immediately, using either:**
 
     Sir.put(keyname, value)
@@ -57,7 +59,7 @@ If `config(:delete_on_nil) == true` and `value == nil`, `put()` will return `tru
 
 **You can retreive the value later, if it hasn't expired, with:**
 
-    my_var = Sir.get(keyname) # for a shallow copy
+    my_var = Sir.get(keyname)
 
 or
 
@@ -68,20 +70,21 @@ or
     end
 
 If the key does not exist, or if it has expired:
+
 * `get()` returns `nil` if not given a block to execute.
 * `get()` yields to code block, if one is supplied.
 
 **To delete a cache entry, you can:**
 
-	Sir.delete(key)
+	Sir.kill(key)
 
 **If you want to clear the cache, you can:**
 
-    Sir.clear
+    Sir.nuke
 
 **If you want to sweep and purge all expired entries, you can:**
 
-    Sir.clean
+    Sir.sweep
 
 **There are a few configuration options available. You can configure SirCachealot with:**
 
@@ -96,6 +99,10 @@ If the key does not exist, or if it has expired:
     end
     
 Note: Backends may have additional configuration parameters that need to be satisfied. The default configuration can be retreived from the `DEFAULTS` constant in the backend class, as shown above. These values may then be modified and passed back to `Sir.configure()`
+
+## API Reference
+
+See `Sir::Backends::Base`
 
 ## Available Backends
 
