@@ -1,10 +1,33 @@
 # SirCachealot
 ![Sir Cachealot graphic](https://github.com/lyjia/sircachealot/blob/master/sircachealot.png?raw=true "Sir Cachealot graphic")
 
-SirCachealot is a very simple memcache-like keystore, licensed under LGPLv3. It is built to be modular and present a consistent API.
+SirCachealot is an easy-to-use, pluggable key-value store, available under the 2-clause BSD license. It is built for:
+
+* Swappable, modular backends. Cache server down? Swap another one in and keep chuggin'. Currently supports Redis and an in-memory store
+* Shared memory between processes. Multi-process environments (such as with Passenger) make shared state difficult.
+* Unified API supporting a selected, shared subset of each backend's features.
+* Easily and seamlessly deal with cache misses.
+* Above all, make cacheing in Ruby fun and easy!
+
+Here's an example usage, which caches a user object to avoid fetching it from the database:
+
+    def login(id, password_hash)
+
+        user = Sir.get(keyname) do |key|               #Doesn't execute the block is key is found
+            Sir.put(key, User.find_by_id(id), 1.day)   #Cache miss! So let's fetch the User and store it for a day
+        end
+
+        # your code here
+        user.authenticate?(password_hash)              #returns true if match, false is not
+
+    end
+
 
 Future plans for 1.0:
-* Rails cache, Redis, and memcache storage modes.
+
+* Storage backends: Redis, RailsCache, Postgres HSTORE, memcache, internal
+* Explore clustering applications
+* Add convenience methods to ActiveRecord
 
 ## Installation
 
@@ -36,14 +59,13 @@ If `config(:delete_on_nil) == true` and `value == nil`, `put()` will return `tru
 **You can retreive the value later, if it hasn't expired, with:**
 
     my_var = Sir.get(keyname) # for a shallow copy
-    my_var = Sir.get(keyname, true) # for a deep copy (crude way, Marshal.load(Marshal.dump(obj)) )
 
 or
 
     # A convenient way to rectify a cache miss!
     # put() returns the object you give it
-    my_var = Sir.get(keyname) do 
-        Sir.put(keyname, User.find_by_id(id))
+    my_var = Sir.get(keyname) do |key|
+        Sir.put(key, User.find_by_id(id))
     end
 
 If the key does not exist, or if it has expired:
@@ -64,15 +86,50 @@ If the key does not exist, or if it has expired:
 
 **There are a few configuration options available. You can configure SirCachealot with:**
 
+    cache_opts = Sir::Backends::RamCache::DEFAULTS #Change RamCache to RedisCache for redis
+
     Sir.configure do |config|
         config[:default_expiry] = 3600 # default expiration timeout in seconds
-        config[:mode]           = :ram_cache # cache storage mode. Currently only :ram_cache is supported. Others may be added at a later date.
+        config[:mode]           = :ram_cache # cache storage mode. Currently: :ram_cache, :redis_cache
         config[:debug]          = true|false # show some debug messages
         config[:annoy]          = true|false # show even more debug messages
-		config[:delete_on_nil]  = true|false # auto-deletes stale cache entries on if value == nil
+        config[:options]        = cache_opts # optional, depending on backend
     end
     
-*Note: Config keynames are always `.downcase.to_sym`!*
+Note: Backends may have additional configuration parameters that need to be satisfied. The default configuration can be retreived from the `DEFAULTS` constant in the backend class, as shown above. These values may then be modified and passed back to `Sir.configure()`
+
+## Available Backends
+
+### RAM Cache (for testing)
+The RAM Cache stores cache entries in a Ruby hash, and is the default cache store that SirCachealot will use if left unconfigured.
+
+RAM Cache does not support automatic expiration, and so it must be periodically #swept(). RAM Cache's thread safety depends on your interpreter: 'green thread' implementations are safe, while true multi-threaded environments (such as JRuby) remain untested at this time.
+
+This backend module is intentionally left simple, and is of limited usefulness. It is designed to be an example for implementing additional backends, and to satisfy basic turn-key functionality.
+
+#### Configuration
+Note that #configure is not necessary if you wish to use RAM cache with its default settings.
+
+    Sir.configure do |config|
+        config[:default_expiry] = 3600
+        config[:mode]           = :ram_cache
+    end
+
+### Redis Cache
+Redis cache supports a subset of full Redis functionality.
+
+#### Configuration
+
+    redis_obj = Redis.new(:path => "/tmp/redis.sock")
+
+    cache_opts = Sir::Backends::RedisCache::DEFAULTS
+    cache_opts[:redis_obj] = redis_obj                   #supply a preconfigured Redis instance
+
+    Sir.configure do |config|
+        config[:default_expiry] = 3600
+        config[:mode]           = :redis_cache
+        config[:options]        = cache_opts
+    end
 
 ## Contributing
 
@@ -84,5 +141,5 @@ If the key does not exist, or if it has expired:
 
 ## License
 
-Use of SirCachealot is permitted under the terms of [LGPLv3](http://www.gnu.org/licenses/lgpl-3.0.txt).
+Use of SirCachealot is permitted under the terms of the [2-clause BSD License](http://directory.fsf.org/wiki?title=License:FreeBSD).
 For more information see LICENSE.txt.

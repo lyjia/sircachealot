@@ -1,5 +1,5 @@
 require 'rspec'
-require 'sir_cachealot'
+require 'sir'
 
 RSpec.configure do |config|
   config.color_enabled = true

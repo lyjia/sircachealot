@@ -3,104 +3,94 @@ require 'spec_helper'
 TEST           = "test"
 DEFAULT_EXPIRY = 600
 
-describe SirCachealot do
+describe 'SirCachealot Ram Cache and basic support' do
 
-	it 'should be configurable' do
+  it 'should be configurable' do
 
-		Sir.configure do |config|
-			config[:default_expiry] = DEFAULT_EXPIRY
-			config["MODE"]          = :ram_cache
-			config[:debug]          = true
-		end
+    Sir.configure do |config|
+      config[:mode]           = :ram_cache
+      config[:default_expiry] = DEFAULT_EXPIRY
+      config[:debug]          = true
+      config[:options]        = {}
+    end
 
-		(Sir.config(:default_expiry) == DEFAULT_EXPIRY && Sir.config(:mode) == :ram_cache).should == true
+    (Sir.config(:default_expiry) == DEFAULT_EXPIRY && Sir.config(:mode) == :ram_cache).should == true
 
-	end
+  end
 
-	it 'should return the key that is put into it' do
-		Sir.put(:test, TEST).should == TEST
-	end
+  it 'should indicate that it is able' do
+    Sir.able?.should == true
+  end
 
-	it 'should return an arbitrary key' do
-		(Sir.get(:test) == TEST).should == true
-	end
+  it 'should return the key that is put into it' do
+    Sir.put(:test, TEST).should == TEST
+  end
 
-	it 'should yield when given a block and a key that does not exist' do
-		(Sir.get(:asdoiajdoaijdaodijaodiajdoaidjaodijaodij) { 5 }).should == 5
-	end
+  it 'should return an arbitrary key' do
+    (Sir.get(:test) == TEST).should == true
+  end
 
-	it 'should return nil when not given a block and a key that does not exist' do
-		(Sir.get(:asdoiajdoaijdaodijaodiajdoaidjaodijaodij)).should == nil
-	end
+  it 'should yield when given a block and a key that does not exist' do
+    (Sir.get(:asdoiajdoaijdaodijaodiajdoaidjaodijaodij) { 5 }).should == 5
+  end
 
-	it 'should immediately expire a 0-expiry key' do
-		Sir.put(:expire, TEST, 0)
-		sleep(1)
+  it 'should return nil when not given a block and a key that does not exist' do
+    (Sir.get(:asdoiajdoaijdaodijaodiajdoaidjaodijaodij)).should == nil
+  end
 
-		Sir.get(:expire).should == nil
-	end
+  it 'should immediately expire a 0-expiry key' do
+    Sir.put(:expire, TEST, 0)
+    sleep(1)
 
-	it 'should report its size correctly' do
+    Sir.get(:expire).should == nil
+  end
 
-		Sir.size?.should == 1
+  it 'should report its size correctly' do
 
-	end
+    Sir.length.should == 1
 
-	it 'should clean() correctly' do
+  end
 
-		Sir.clear
+  it 'should sweep() correctly' do
 
-		Sir.put(:clean, TEST, 0)
-		Sir.clean
+    Sir.nuke
 
-		Sir.size?.should == 0
+    Sir.put(:clean, TEST, 0)
+    Sir.put(:mog, 1231231231, nil)
+    Sir.sweep
+    Sir.length.should == 1
 
-	end
+  end
 
-	it 'should dump() correctly' do
-		Sir.put(:dump, TEST)
-		Sir.dump
-	end
+  it 'should sweep(true) correctly' do
 
-	it 'should accept a nil-expiry key' do
-		Sir.put(:test_nil, TEST).should == TEST
-	end
+    Sir.nuke
 
-	it 'should not expire a nil-expiry key' do
-		Sir.get(:test_nil).should == TEST
-	end
+    Sir.put(:clean, TEST, 0)
+    Sir.put(:mog, 1231231231, nil)
+    Sir.sweep(true)
+    Sir.length.should == 0
 
-	it 'should auto-delete a key when fed a nil' do
-		Sir.put(:test_nil, nil).should == true
-	end
+  end
 
-	it 'should delete a key if specified' do
-		Sir.put(:delete_me, TEST)
-		Sir.delete(:delete_me).should == true
-	end
+  it 'should dump() correctly' do
+    Sir.put(:dump, TEST)
+    Sir.dump
+  end
 
-	it 'should return a shallow copy by default' do
-		hash = { :a => { :aa => 0 } }
-		Sir.put(:shallow_copy, hash)
+  it 'should accept a nil-expiry key' do
+    Sir.put(:test_nil, TEST, nil).should == TEST
+  end
 
-		newhash = Sir.get(:shallow_copy)
+  it 'should not expire a nil-expiry key' do
+    Sir.get(:test_nil).should == TEST
+  end
 
-		newhash[:a][:aa] = 1
+  it 'should delete a key if specified' do
+    Sir.put(:delete_me, TEST)
+    Sir.kill(:delete_me)
+    Sir.get(:delete_me).should == nil
+  end
 
-		(hash[:a][:aa]).should == newhash[:a][:aa]
 
-	end
-
-	it 'should return a deep copy when asked' do
-		hash = { :a => { :aa => "0" } }
-		Sir.put(:deep_copy, hash)
-
-		newhash = Sir.get(:deep_copy, true)
-
-		newhash[:a][:aa] = "1"
-
-		(hash[:a][:aa]).should_not == newhash[:a][:aa]
-
-	end
-	
 end

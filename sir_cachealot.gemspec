@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'sir_cachealot/version'
+require 'sir/version'
 
 Gem::Specification.new do |gem|
   gem.name          = "sir_cachealot"
-  gem.version       = SirCachealot::VERSION
+  gem.version       = Sir::VERSION
   gem.authors       = ["Lyjia"]
   gem.email         = ["tom@tomcorelis.com"]
   gem.description   = %q{A dead simple RAM keystore}
@@ -17,7 +17,10 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
+
+  gem.add_development_dependency 'redis', '~> 3.0.7'
+
   gem.add_development_dependency 'rspec', '~> 2.5'
-  gem.add_development_dependency 'redis'
+  gem.add_development_dependency 'awesome_print'
 
 end
