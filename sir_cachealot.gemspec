@@ -7,10 +7,10 @@ Gem::Specification.new do |gem|
   gem.name          = "sir_cachealot"
   gem.licenses      = ["BSD-2-Clause"]
   gem.version       = Sir::VERSION
-  gem.authors       = ["Lyjia"]
+  gem.authors       = ["Lyjia / Tom Corelis"]
   gem.email         = ["tom@tomcorelis.com"]
   gem.description   = %q{A dead simple RAM keystore}
-  gem.summary       = %q{SirCachealot is a drop-in memcache-like RAM cache for Ruby. Cache entries are saved and recalled by a key string, and their values can be whatever a Ruby hash can hold. Values can also expire, however expiration is only checked when the key is called, or a manual sweeper is run. }
+  gem.summary       = %q{ SirCachealot is a drop-in memcache-like RAM cache for Ruby. Cache entries are saved and recalled by a key string, and their values can hold (most) anything a Ruby object can hold. Values can also expire, however expiration is only checked when the key is called, or a manual sweeper is run. }
   gem.homepage      = "http://www.lyjia.us"
 
   gem.files         = `git ls-files`.split($/)
