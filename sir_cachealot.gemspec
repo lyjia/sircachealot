@@ -5,6 +5,7 @@ require 'sir/version'
 
 Gem::Specification.new do |gem|
   gem.name          = "sir_cachealot"
+  gem.licenses      = ["BSD-2-Clause"]
   gem.version       = Sir::VERSION
   gem.authors       = ["Lyjia"]
   gem.email         = ["tom@tomcorelis.com"]
