@@ -46,10 +46,19 @@ describe 'SirCachealot Ram Cache and basic support' do
   end
 
   it 'should report its size correctly' do
-
     Sir.length.should == 1
+  end
+
+
+  it 'should be able to list all keys' do
+    x = Sir.keys.each do |k|
+      Sir.debug("#{k}")
+    end
+
+    x[0].should == :test
 
   end
+
 
   it 'should sweep() correctly' do
 
@@ -88,7 +97,7 @@ describe 'SirCachealot Ram Cache and basic support' do
 
   it 'should delete a key if specified' do
     Sir.put(:delete_me, TEST)
-    Sir.kill(:delete_me)
+    Sir.kill(:delete_me).should == true
     Sir.get(:delete_me).should == nil
   end
 

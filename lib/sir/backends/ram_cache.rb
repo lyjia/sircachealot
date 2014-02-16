@@ -7,7 +7,7 @@ class Sir::Backends::RamCache < Sir::Backends::Base
 
   DEFAULTS = {}
 
-  @@config    = nil
+  @@config    = DEFAULTS
   @@ram_cache = {}
 
   VALUE  = 0
@@ -45,26 +45,27 @@ class Sir::Backends::RamCache < Sir::Backends::Base
   end
 
 
-  def self.able?
-    return true
-  end
-
-
   def self.put(key, value, expiry = Sir.config(:default_expiry))
     invalid = self.valid?({ key: key, value: value, expiry: expiry })
     raise ArgumentError, invalid if invalid
 
+    #### This code snippet needs to be DRYed
     expiry = expiry.to_i unless expiry.nil?
 
     # normalize relative/absolute times to absolute time, skip if expiry = nil
     if !expiry.nil? && Time.now.to_i > expiry
       expiry += Time.now.to_i
     end
+    ####
 
     @@ram_cache[key] = [value, expiry]
     return value
 
+  end
 
+
+  def self.able?
+    return true
   end
 
 
@@ -72,13 +73,16 @@ class Sir::Backends::RamCache < Sir::Backends::Base
     invalid = self.valid?({ key: key })
     raise ArgumentError, invalid if invalid
 
-    @@ram_cache.delete(key) if @@ram_cache.has_key?(key)
+    if @@ram_cache.has_key?(key)
+      @@ram_cache.delete(key)
+      return true
+    end
 
   end
 
 
   def self.dump
-    @@ram_cache.each { |k,v| $stderr.puts("#{k}: #{v}") }
+    @@ram_cache.each { |k, v| $stderr.puts("#{k}: #{v}") }
     return true
   end
 
@@ -109,8 +113,17 @@ class Sir::Backends::RamCache < Sir::Backends::Base
     end
 
     Sir.debug("Finished! (now #{@@ram_cache.keys.length} keys)")
+    return true
   end
 
+  MASK = "*"
+  def self.keys(mask = MASK)
+    if mask == MASK
+      return @@ram_cache.keys
+    else
+      return @@ram_cache.keys.bsearch {|x| (x =~ /#{mask}/i) }
+    end
+  end
 
   private
 

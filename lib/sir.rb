@@ -15,8 +15,8 @@ module Sir
 
   @@configuration = {
       mode:           :ram_cache,
-      debug:          false,
-      annoy:          false, #super annoying debug messages
+      debug:          false, #debug messages (prints to stderr)
+      annoy:          false, #super annoying debug messages (prints to stderr)
       default_expiry: 3600, #Integer(1.hour)
       options:        {}
   }
@@ -31,9 +31,10 @@ module Sir
       yield(@@configuration)
     end
 
-    ap @@configuration
+    #ap @@configuration
 
-    @@backend       = BACKENDS[@@configuration[:mode]]
+    @@backend = BACKENDS[@@configuration[:mode]]
+    @@backend.configure(@@configuration[:options])
 
     # this doesnt work right
     #Sir::Backends::Base::EXPORTS.each do |func|
@@ -43,11 +44,50 @@ module Sir
     #  self.annoy("Attached #{func}")
     #end
 
-    self.debug("SirCachealot #{Sir::VERSION} loaded configuration, defined #{Sir::Backends::Base::EXPORTS.length} methods")
-    self.annoy("Annoy activated!")
+    self.debug("SirCachealot #{Sir::VERSION} loaded configuration for #{@@configuration[:mode]}, watching #{Sir::Backends::Base::EXPORTS.length} methods")
+    self.annoy("Annoy activated! Bwahaha!")
     return true
 
   end
+
+
+  # Tests is debug flag is set
+  # @returns [boolean] debug status
+  def self.debug?
+    return @@configuration[:debug]
+  end
+
+
+  # Tests if annoy flag is set
+  # @returns [boolean] annoy status
+  def self.annoy?
+    return @@configuration[:annoy]
+  end
+
+
+  # Send message to debug stream
+  def self.debug(msg)
+    $stderr.puts("<=S=I=R=[==] !! #{msg}") if self.debug?
+  end
+
+
+  # Send message to annoy stream
+  def self.annoy(msg)
+    $stderr.puts("<=S=I=R=[==] - #{msg}") if self.annoy?
+  end
+
+
+  # look up value of single configuration option
+  def self.config(key)
+    return @@configuration[key]
+  end
+
+
+  def self.dump_config
+    p @@configuration
+    return nil
+  end
+
 
   # TODO: define all these methods on configure(), we should only go here if the user hasnt configured Sir
   # catch on use if unconfigured
@@ -60,35 +100,6 @@ module Sir
       super
     end
 
-  end
-
-
-  class << self
-    alias :config :configure
-  end
-
-
-  def self.debug?
-    return @@configuration[:debug]
-  end
-
-
-  def self.annoy?
-    return @@configuration[:annoy]
-  end
-
-
-  def self.debug(msg)
-    $stderr.puts("<=S=I=R=[==] ! #{msg}") if self.debug?
-  end
-
-
-  def self.annoy(msg)
-    $stderr.puts("<=S=I=R=[==] : #{msg}") if self.annoy?
-  end
-
-  def self.config(key)
-    return @@configuration[key]
   end
 
 
@@ -276,6 +287,25 @@ module Sir
 #	end
 #
 #end
+
+  #remove me
+  #
+  # @todo Remove me
+  def self.conredis
+    require 'redis'
+    redis_obj        = Redis.new(:host => "127.0.0.1", :port => "6379")
+    opts             = Sir::Backends::RedisCache::DEFAULTS
+    opts[:redis_obj] = redis_obj
+
+
+    Sir.configure do |config|
+      config[:mode]           = :redis_cache
+      config[:debug]          = true
+      config[:options]        = opts
+    end
+
+  end
+
 
   private
 

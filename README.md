@@ -3,11 +3,11 @@
 
 SirCachealot is an easy-to-use, pluggable key-value store, available under the 2-clause BSD license. It is built for:
 
-* Swappable, modular backends. Cache server down? Swap another one in and keep chuggin'. Currently supports Redis and an in-memory store
-* Shared memory between processes. Multi-process environments (such as with Passenger) make shared state difficult.
+* Swappable, modular backends. Cache server down? Swap another one in and keep chuggin'. Currently supports Redis and an in-memory store.
+* Shared memory between processes. Multi-process environments (such as in Passenger) make shared state difficult.
 * Unified API supporting a selected, shared subset of each backend's features.
 * Easily and seamlessly deal with cache misses.
-* Above all, make cacheing in Ruby fun and easy!
+* Lets you cache stuff the Ruby way!
 
 Here's an example usage, which caches a user object to avoid fetching it from the database:
 
@@ -22,10 +22,9 @@ Here's an example usage, which caches a user object to avoid fetching it from th
 
     end
 
-
-Future plans for 1.0:
-
-* Storage backends: Redis, RailsCache, Postgres HSTORE, memcache, internal
+Roadmap for 1.0:
+* More storage backends: RailsCache, Postgres HSTORE, Mysql memtable, memcache, internal
+* Add redis incr/decr and extra datatypes (emulate features on ramcache if necessary)
 * Explore clustering applications
 * Add convenience methods to ActiveRecord
 
