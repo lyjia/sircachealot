@@ -1,7 +1,10 @@
 # -*- encoding: utf-8 -*-
+
+# set up load paths for other modules
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'sir/version'
+
+require File.dirname(__FILE__) + "/lib/sir"
 
 Gem::Specification.new do |gem|
   gem.name          = "sir_cachealot"

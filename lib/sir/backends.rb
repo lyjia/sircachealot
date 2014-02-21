@@ -3,6 +3,6 @@ module Sir::Backends
 
 end
 
-require 'sir/backends/base'
-require 'sir/backends/ram_cache'
-require 'sir/backends/redis_cache'
+required 'sir/backends/Base'
+required 'sir/backends/ram_cache'
+required 'sir/backends/redis_cache'
