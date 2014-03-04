@@ -44,7 +44,7 @@ Or install it yourself as:
 
 ## Usage
 
-SirCachealot exposes a new module named `Sir`. This module is designed to be available globally in both Rails apps and vanilla Ruby scripts (don't forget `require 'sir_cachealot'`!)
+SirCachealot exposes a new module named `Sir`. This module is designed to be available globally in both Rails apps and vanilla Ruby scripts (don't forget `require 'sir'`!)
 
 This section is a quick tour through some of SirCachealot's best features. For a comprehensive API reference, please refer to the comments in `Sir::Backends::Base`.
 
