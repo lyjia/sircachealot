@@ -1,8 +1,7 @@
+$stderr.puts "required #{$0}"
 module Sir::Backends
-
-
 end
 
-required 'sir/backends/Base'
-required 'sir/backends/ram_cache'
-required 'sir/backends/redis_cache'
+require 'sir/backends/Base'
+require 'sir/backends/ram_cache'
+require 'sir/backends/redis_cache'

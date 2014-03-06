@@ -1,11 +1,13 @@
-require "rubygems"
+#require "rubygems"
+require "sir/version"
+require "sir/backends"
+# $stderr.puts "====================== Load path is:"
+# $stderr.puts $LOAD_PATH
 
-def required(str)
-  require File.dirname(__FILE__) + "/" + str
-end
+# def required(str)
+#   require File.dirname(__FILE__) + "/" + str
+# end
 
-required "sir/version"
-required "sir/backends"
 
 module Sir
 
