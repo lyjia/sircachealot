@@ -1,10 +1,13 @@
 # -*- encoding: utf-8 -*-
-#require 'sir/version'
-module Sir
-  VERSION = "0.6.6"
-end
+dir = "#{File.expand_path(File.dirname(__FILE__))}/lib" # gem build doesn't add /lib to load path??
+$LOAD_PATH.unshift(dir) unless $LOAD_PATH.include?(dir)
+require 'sir/version'
 
-$stderr.puts $LOAD_PATH
+# module Sir
+#   VERSION = "0.6.6"
+# end
+
+#$stderr.puts $LOAD_PATH
 
 Gem::Specification.new do |gem|
 
