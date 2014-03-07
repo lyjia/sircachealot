@@ -93,7 +93,7 @@ class Sir::Backends::RedisCache < Sir::Backends::Base
     invalid = self.valid?({ key: key })
     raise ArgumentError, invalid if invalid
 
-    if @@redis_driver.del(self::nsed_key(key))
+    if @@redis.del(self::nsed_key(key))
       return true
     end
   end

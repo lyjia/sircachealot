@@ -1,4 +1,3 @@
-$stderr.puts "required #{$0}"
 module Sir::Backends
 end
 

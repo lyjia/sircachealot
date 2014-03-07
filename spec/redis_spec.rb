@@ -91,6 +91,13 @@ describe "SirCachealot Redis support" do
     (Sir.get(:asdoiajdoaijdaodijaodiajdoaidjaodijaodij)).should == nil
   end
 
+  it 'should be able to delete a key' do
+    k = :alasdiauhdaiudhai
+    Sir.put(k, "test")
+    Sir.kill(k)
+    Sir.get(k).should == nil
+  end
+
   it 'should immediately expire a 0-expiry key' do
     Sir.put(:expire, TEST, 0)
     sleep(1)
