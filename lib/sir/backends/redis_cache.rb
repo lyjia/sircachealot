@@ -23,8 +23,8 @@ class Sir::Backends::RedisCache < Sir::Backends::Base
     invalid = self.valid?({ key: key })
     raise ArgumentError, invalid if invalid
 
-    key = self::nsed_key(key)
-    got = @@redis.get(key)
+    nskey = self::nsed_key(key)
+    got = @@redis.get(nskey)
 
     unless got.nil?
 

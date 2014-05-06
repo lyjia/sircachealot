@@ -105,5 +105,14 @@ describe "SirCachealot Redis support" do
     Sir.get(:expire).should == nil
   end
 
+   it 'should return the same named key that it was given in event of a miss' do
+    key = :adadadadad
+    res = nil
+    Sir.get(key) do |k|
+      res = k
+    end
+    res.should == key
+  end
+
 
 end

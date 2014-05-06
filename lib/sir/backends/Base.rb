@@ -148,7 +148,7 @@ class Sir::Backends::Base
 
   def self.valid?(hash)
     return "Key must coerce to a symbol" unless hash[:key].respond_to?(:intern) if hash[:key]
-    return "Time must coerce to a valid timestamp or timespan in seconds" unless (hash[:expiry].is_a?(Time) || hash[:expiry].is_a?(Integer)) if hash[:expiry]
+    return "Time must coerce to a valid timestamp or timespan in seconds" unless (hash[:expiry].is_a?(Time) || hash[:expiry].is_a?(Integer) || (defined?(Rails) && hash[:expiry].is_a?(DateTime) )) if hash[:expiry]
   end
 
 end

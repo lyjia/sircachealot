@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
-dir = "#{File.expand_path(File.dirname(__FILE__))}/lib" # gem build doesn't add /lib to load path??
+dir = "#{File.expand_path(File.dirname(__FILE__))}/lib"
 $LOAD_PATH.unshift(dir) unless $LOAD_PATH.include?(dir)
+
 require 'sir/version'
 
 #$stderr.puts $LOAD_PATH
