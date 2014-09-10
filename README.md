@@ -13,9 +13,9 @@ Here's a quick example, which caches a user object to avoid fetching it from the
 
     def login(id, password_hash)
 
-        user = Sir.get(keyname) do |key|               #Doesn't execute the block is key is found
+        user = Sir.get("userkey-#{id}") do |key|               #Doesn't execute the block if key is found
             Sir.put(key, User.find_by_id(id), 1.day)   #Cache miss! So let's fetch the User and store it for a day
-        end                                                 (note: 1.day comes from Rails, not included)
+        end                                            #    (note: 1.day comes from ActiveSupport, not included)
 
         # your code here
         user.authenticate?(password_hash)              #returns true if match, false is not
