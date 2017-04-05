@@ -14,8 +14,8 @@ Gem::Specification.new do |gem|
   gem.authors       = ["Lyjia / Tom Corelis"]
   gem.email         = ["tom@tomcorelis.com"]
   
-  gem.description   = %q{A dead simple RAM keystore}
-  gem.summary       = %q{ SirCachealot is a drop-in memcache-like RAM cache for Ruby. Cache entries are saved and recalled by a key string, and their values can hold (most) anything a Ruby object can hold. Values can also expire, however expiration is only checked when the key is called, or a manual sweeper is run. }
+  gem.description   = %q{A multi-backend, time-expiring keystore with a simple interface}
+  gem.summary       = %q{ SirCachealot is a drop-in memcache-like key-value cache for Ruby. Cache entries are saved and recalled by a key string, and their values can hold (most) anything a Ruby object can hold. Depending on the backend, values can also expire, either automatically or when the key is called, or when a manual sweep is run. }
   gem.homepage      = "https://github.com/lyjia/sircachealot"
 
   gem.files         = `git ls-files`.split($/)

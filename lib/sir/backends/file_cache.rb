@@ -1,15 +1,4 @@
-# Base class for all backend implementations
-#
-# To build a new backend, subcass Sir::Backends::Base (see RamCache for a simple example)
-# Backend classes register to Sir by implementing two constants:
-
-#   META: a hash containing useful metadata
-#     must have :name, :author keys defined
-
-#   CONFIG: a template of the default configuration hash for this module
-#
-#
-class Sir::Backends::Base
+class Sir::Backends::FileCache < Sir::Backends::Base
   EXPORTS = [:get, :put, :kill, :dump, :nuke, :sweep, :flush, :able?, :length, :keys]
 
   ##########################################################
@@ -124,7 +113,7 @@ class Sir::Backends::Base
     raise NotImplementedError
   end
 
-  # Called immediately after @config has been set. Child backends should inherit this to react to configuration changes
+  # Called immediately after @@config has been set. Child backends should inherit this to react to configuration changes
   def post_configure
   end
 
@@ -136,7 +125,7 @@ class Sir::Backends::Base
   # @param options_hash [hash] should be a (modified, or not) copy of the backend's CONFIG constant
   def configure(options_hash)
     Sir.annoy("configure #{options_hash}")
-    @config = options_hash
+    @@config = options_hash
     post_configure
   end
 

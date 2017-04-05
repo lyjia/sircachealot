@@ -5,36 +5,38 @@ class Sir::Backends::RedisCache < Sir::Backends::Base
   TYPEERROR = "Redis does not need or support this function"
 
   META = {
-      name:   "Redis Cache",
+      name: "Redis Cache",
       author: "Lyjia"
   }
 
   DEFAULTS = {
-      redis_obj:  nil,
-      namespace:  'SirCachealot',
+      redis_obj: nil,
+      namespace: 'SirCachealot',
       serializer: :marshal
   }
 
-  @@config = DEFAULTS
-  @@redis  = @@config[:redis_obj]
+  def new(&config)
+    @config = config
+    @config = DEFAULTS if @config.nil?
+    @redis = @config[:redis_obj]
+  end
 
-
-  def self.get(key)
-    invalid = self.valid?({ key: key })
+  def get(key)
+    invalid = valid?({key: key})
     raise ArgumentError, invalid if invalid
 
-    key = self::nsed_key(key)
-    got = @@redis.get(key)
+    key = nmespd_key(key)
+    got = @redis.get(key)
 
     unless got.nil?
 
-      case @@config[:serializer]
+      case @config[:serializer]
         when :marshal
           return Marshal.load(got)[0]
         when :json
           return JSON.parse(got)[0]
         else
-          raise TypeError, "Invalid serializer: #{@@config[:serializer]}. You probably want to look at your Sir.configure() statement"
+          raise TypeError, "Invalid serializer: #{@config[:serializer]}. You probably want to look at your Sir.configure() statement"
       end
 
     else
@@ -46,23 +48,23 @@ class Sir::Backends::RedisCache < Sir::Backends::Base
   # @note We wrap `value` in `[ ]` to protect nil values and such from being misinterpreted
   #   JSON in particular: JSON.parse(nil.to_json) #=> JSON::ParserError
   #                   but JSON.parse([nil].to_json) #=> [nil]
-  def self.put(key, value, expiry = Sir.config(:default_expiry))
-    invalid = self.valid?({ key: key, value: value, expiry: expiry })
+  def put(key, value, expiry = Sir.config(:default_expiry))
+    invalid = valid?({key: key, value: value, expiry: expiry})
     raise ArgumentError, invalid if invalid
 
-    key = self::nsed_key(key)
+    key = nmespd_key(key)
     ser = nil
 
-    case @@config[:serializer]
+    case @config[:serializer]
       when :marshal
         ser = Marshal.dump([value]).to_s
       when :json
         ser = [value].to_json
       else
-        raise TypeError, "Invalid serializer: #{@@config[:serializer]}. You probably want to look at your Sir.configure() statement"
+        raise TypeError, "Invalid serializer: #{@config[:serializer]}. You probably want to look at your Sir.configure() statement"
     end
 
-    @@redis.set(key, ser)
+    @redis.set(key, ser)
 
     #### This code snippet needs to be DRYed
     expiry = expiry.to_i unless expiry.nil?
@@ -74,9 +76,9 @@ class Sir::Backends::RedisCache < Sir::Backends::Base
     ####
 
     if expiry == nil
-      @@redis.persist(key)
+      @redis.persist(key)
     else
-      @@redis.expireat(key, expiry.to_i)
+      @redis.expireat(key, expiry.to_i)
     end
 
     return value
@@ -84,61 +86,63 @@ class Sir::Backends::RedisCache < Sir::Backends::Base
   end
 
 
-  def self.able?
-    return TYPEERROR == @@redis.echo(TYPEERROR)
+  def able?
+    return TYPEERROR == @redis.echo(TYPEERROR)
   end
 
 
-  def self.kill(key)
-    invalid = self.valid?({ key: key })
+  def kill(key)
+    invalid = valid?({key: key})
     raise ArgumentError, invalid if invalid
 
-    if @@redis.del(self::nsed_key(key))
+    if @redis.del(nmespd_key(key))
       return true
     end
   end
 
 
-  def self.dump
+  def dump
     raise TypeError, TYPEERROR
   end
 
 
-  def self.nuke
-    return true if @@redis.flushdb
+  def nuke
+    return true if @redis.flushdb
   end
 
 
-  def self.sweep(include_nil_expiry = nil)
+  def sweep(include_nil_expiry = nil)
     raise TypeError, TYPEERROR
   end
 
 
-  def self.flush
-    return true if @@redis.bgsave
+  def flush
+    return true if @redis.bgsave
   end
 
 
-  def self.length
-    return @@redis.dbsize
+  def length
+    return @redis.dbsize
   end
 
 
-  def self.keys(mask = "*")
-    return @@redis.keys(mask).map {|x| x.gsub(/^#{self.nsed_key("")}/, '').intern}
+  def keys(mask = "*")
+    return @redis.keys(mask).map { |x| x.gsub(/^#{nmespd_key(nil)}/, '').intern }
   end
 
 
-  def self.post_configure
-    @@redis = @@config[:redis_obj]
+  def post_configure
+    @redis = @config[:redis_obj]
   end
 
 
   private
 
-  # returns a namespaced key
-  def self.nsed_key(key)
-    return "#{@@config[:namespace]}-#{key}"
+  # @returns the namespace name if key is nil
+  # @returns a namespaced key otherwise
+  def nmespd_key(key)
+    return @config[:namespace] if key.nil?
+    return "#{@config[:namespace]}-#{key}"
   end
 
 

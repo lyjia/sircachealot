@@ -1,3 +1,5 @@
+require 'time'
+
 class Sir::Backends::RamCache < Sir::Backends::Base
 
   META = {
@@ -7,20 +9,20 @@ class Sir::Backends::RamCache < Sir::Backends::Base
 
   DEFAULTS = {}
 
-  @@config    = DEFAULTS
-  @@ram_cache = {}
+  @config    = DEFAULTS
+  @ram_cache = {}
 
   VALUE  = 0
   EXPIRY = 1
 
 
-  def self.get(key)
-    invalid = self.valid?({ key: key })
+  def get(key)
+    invalid = valid?({ key: key })
     raise ArgumentError, invalid if invalid
 
     Sir.annoy("I have a block!") if block_given?
 
-    if x = @@ram_cache[key]
+    if x = @ram_cache[key]
 
       if x[EXPIRY].nil? || x[EXPIRY] > Time.now.to_i
 
@@ -30,7 +32,7 @@ class Sir::Backends::RamCache < Sir::Backends::Base
 
         # cache entry is stale
         Sir.debug("Cache entry <#{key}> expired at #{x[VALUE]}. Deleting...")
-        @@ram_cache.delete(key)
+        @ram_cache.delete(key)
 
         super
 
@@ -45,8 +47,8 @@ class Sir::Backends::RamCache < Sir::Backends::Base
   end
 
 
-  def self.put(key, value, expiry = Sir.config(:default_expiry))
-    invalid = self.valid?({ key: key, value: value, expiry: expiry })
+  def put(key, value, expiry = Sir.config(:default_expiry))
+    invalid = valid?({ key: key, value: value, expiry: expiry })
     raise ArgumentError, invalid if invalid
 
     #### This code snippet needs to be DRYed
@@ -58,78 +60,78 @@ class Sir::Backends::RamCache < Sir::Backends::Base
     end
     ####
 
-    @@ram_cache[key] = [value, expiry]
+    @ram_cache[key] = [value, expiry]
     return value
 
   end
 
 
-  def self.able?
+  def able?
     return true
   end
 
 
-  def self.kill(key)
-    invalid = self.valid?({ key: key })
+  def kill(key)
+    invalid = valid?({ key: key })
     raise ArgumentError, invalid if invalid
 
-    if @@ram_cache.has_key?(key)
-      @@ram_cache.delete(key)
+    if @ram_cache.has_key?(key)
+      @ram_cache.delete(key)
       return true
     end
 
   end
 
 
-  def self.dump
-    @@ram_cache.each { |k, v| $stderr.puts("#{k}: #{v}") }
+  def dump
+    @ram_cache.each { |k, v| $stderr.puts("#{k}: #{v}") }
     return true
   end
 
 
-  def self.nuke
-    @@ram_cache = {}
+  def nuke
+    @ram_cache = {}
     return true
   end
 
 
-  def self.length
-    @@ram_cache.length
+  def length
+    @ram_cache.length
   end
 
 
-  def self.sweep(include_nil_expiry = nil)
-    Sir.debug("Invalidating stale keys... (#{@@ram_cache.keys.length} keys) #{include_nil_expiry}")
+  def sweep(include_nil_expiry = nil)
+    Sir.debug("Invalidating stale keys... (#{@ram_cache.keys.length} keys) #{include_nil_expiry}")
 
-    @@ram_cache.each_key do |k|
+    @ram_cache.each_key do |k|
 
-      if @@ram_cache[k][EXPIRY].nil? && include_nil_expiry
-        @@ram_cache.delete(k)
+      if @ram_cache[k][EXPIRY].nil? && include_nil_expiry
+        @ram_cache.delete(k)
         next
       end
 
-      @@ram_cache.delete(k) if self.key_expired?(k)
+      @ram_cache.delete(k) if key_expired?(k)
 
     end
 
-    Sir.debug("Finished! (now #{@@ram_cache.keys.length} keys)")
+    Sir.debug("Finished! (now #{@ram_cache.keys.length} keys)")
     return true
   end
 
   MASK = "*"
-  def self.keys(mask = MASK)
+  def keys(mask = MASK)
     if mask == MASK
-      return @@ram_cache.keys
+      return @ram_cache.keys
     else
-      return @@ram_cache.keys.bsearch {|x| (x =~ /#{mask}/i) }
+      return @ram_cache.keys.bsearch {|x| (x =~ /#{mask}/i) }
     end
   end
 
   private
 
-  def self.key_expired?(key)
+  def key_expired?(key)
 
-    if x = @@ram_cache[key]
+    if x = @ram_cache[key]
 
       ans = nil
       ans = false if x[EXPIRY].nil?
