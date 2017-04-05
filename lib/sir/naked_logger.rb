@@ -1,6 +1,6 @@
-class NakedLogger
+class Sir::NakedLogger
 
-  def new(&args)
+  def initialize(**args)
     @fatal = args[:fatal]
     @debug = args[:debug]
     @info = args[:info]

@@ -1,3 +1,4 @@
+#require 'awesome_print'
 class SirCachelot
   
   BACKENDS = {
@@ -7,14 +8,17 @@ class SirCachelot
 
   @backend = nil
 
-  @configuration = {
+  DEFAULT_CONFIG = {
       logger:         Sir::NakedLogger.new(info: true, debug: true),
       backend:        Sir::Backends::RamCache.new,
       namespace:      self.name,
       default_expiry: 3600,  #Integer(1.hour)
   }
 
-  def new(&block)
+  @configuration = nil
+
+  def initialize(&block)
+    @configuration = DEFAULT_CONFIG
     configure(&block)
   end
 
@@ -39,7 +43,7 @@ class SirCachelot
     #  annoy("Attached #{func}")
     #end
 
-    debug("SirCachealot #{Sir::VERSION} loaded configuration for #{c(:backend).class.name}, watching #{c(:backend)::EXPORTS.length} methods")
+    debug("SirCachealot #{Sir::VERSION} loaded configuration for #{c(:backend).class.name}, watching #{c(:backend).class::EXPORTS.length} methods")
     annoy("Annoy activated! Bwahaha!")
     return true
 
@@ -75,7 +79,7 @@ class SirCachelot
   # catch on use if unconfigured
   def method_missing(meth, *args, &block)
 
-    if Sir::Backends::Base::EXPORTS.include?(meth)
+    if @backend.class::EXPORTS.include?(meth)
       #configure! if @configuration.nil?
       return @backend.send(meth, *args, &block)
     else
@@ -107,13 +111,13 @@ class SirCachelot
 
   # Send message to debug stream
   def debug(msg)
-    c (:logger).debug(msg) if debug?
+    (c :logger).debug(msg)
   end
 
 
   # Send message to annoy stream
   def annoy(msg)
-    c (:logger).debug("(ANNOY) #{msg}") if annoy?
+    (c :logger).debug("(ANNOY) #{msg}")
   end
 
 

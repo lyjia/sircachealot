@@ -15,10 +15,20 @@ class Sir::Backends::RedisCache < Sir::Backends::Base
       serializer: :marshal
   }
 
-  def new(&config)
-    @config = config
-    @config = DEFAULTS if @config.nil?
+  def initialize(&block)
+    @config = DEFAULTS
+    @config = configure(&block)
     @redis = @config[:redis_obj]
+  end
+
+  def configure(&block)
+    if block_given?
+      yield(@config)
+      return @config
+    else
+      raise ArgumentError, "Configure requires a block)"
+    end
+
   end
 
   def get(key)

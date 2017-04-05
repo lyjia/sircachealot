@@ -1,7 +1,8 @@
 #require "rubygems"
 require "sir/version"
 require "sir/backends"
-require "sir_cachelot"
+require "sir/naked_logger"
+require "sir_cachealot"
 # $stderr.puts "====================== Load path is:"
 # $stderr.puts $LOAD_PATH
 
@@ -12,4 +13,13 @@ require "sir_cachelot"
 
 module Sir
   @sir = SirCachelot.new
+
+  def self.configure(&block)
+    @sir.configure(&block)
+  end
+
+  def self.method_missing(meth, *args, &block)
+    return @sir.send(meth, *args, &block)
+  end
+
 end
