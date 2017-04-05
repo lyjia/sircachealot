@@ -137,7 +137,7 @@ class Sir::Backends::RedisCache < Sir::Backends::Base
 
 
   def keys(mask = "*")
-    return @redis.keys(mask).map { |x| x.gsub(/^#{nmespd_key(nil)}/, '').intern }
+    return @redis.keys(mask).map { |x| x.gsub(/^#{nmespd_key(nil)}\-/, '').intern }
   end
 
 

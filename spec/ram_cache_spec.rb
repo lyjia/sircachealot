@@ -13,7 +13,7 @@ describe 'Ram Cache (mashal serializer)' do
       config[:serializer] = :marshal
     end
 
-    (Sir.config(:default_expiry) == DEFAULT_EXPIRY && Sir.config(:mode) == :ram_cache).should == true
+   (Sir.config(:default_expiry) == DEFAULT_EXPIRY) && (Sir.config(:backend).should be_a Sir::Backends::RamCache)
 
   end
 
@@ -32,7 +32,7 @@ describe 'Ram Cache (json serializer)' do
       config[:serializer] = :json
     end
 
-    (Sir.config(:default_expiry) == DEFAULT_EXPIRY && Sir.config(:mode) == :ram_cache).should == true
+    (Sir.config(:default_expiry) == DEFAULT_EXPIRY) && (Sir.config(:backend).should be_a Sir::Backends::RamCache)
 
   end
 

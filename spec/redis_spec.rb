@@ -14,7 +14,6 @@ describe "Redis Adapter (marshal mode)" do
 
     Sir.configure do |config|
       config[:default_expiry] = DEFAULT_EXPIRY
-      config[:mode] = :redis_cache
 
       config[:backend] = Sir::Backends::RedisCache.new do |rds|
         rds[:redis_obj] = redis_obj
@@ -35,7 +34,6 @@ describe "Redis Adapter (json mode)" do
 
     Sir.configure do |config|
       config[:default_expiry] = DEFAULT_EXPIRY
-      config[:mode] = :redis_cache
 
       config[:backend] = Sir::Backends::RedisCache.new do |rds|
         rds[:redis_obj] = redis_obj

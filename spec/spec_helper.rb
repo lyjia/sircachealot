@@ -50,7 +50,7 @@ shared_examples_for Sir do
     (Sir.get(:asdoiajdoaijdaodijaodiajdoaidjaodijaodij) { 5 }).should == 5
   end
 
-  it 'should return nil when not given a block and a key that does not exist' do
+  it 'should return nil when given only a key that does not exist' do
     (Sir.get(:asdoiajdoaijdaodijaodiajdoaidjaodijaodij)).should == nil
   end
 
