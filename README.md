@@ -1,7 +1,7 @@
 # SirCachealot
 ![Sir Cachealot graphic](https://github.com/lyjia/sircachealot/blob/master/sircachealot.png?raw=true "Sir Cachealot graphic")
 
-SirCachealot is an easy-to-use, in-memory, pluggable key-value store, available under the 2-clause BSD license. It is built for:
+SirCachealot is an easy-to-use, multi-backend, auto-expiring key-value store for Ruby, available under the 2-clause BSD license. It is built for:
 
 * Simple, swappable, modular backends. Cache server down? Swap another one in and keep chuggin'. Currently supports Redis and an in-memory store.
 * Shared memory between processes. Multi-process environments (such as in Passenger) make shared state difficult.
